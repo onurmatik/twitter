@@ -1,0 +1,6 @@
+Django
+Delorean
+oauthlib
+requests
+requests-oauthlib
+psycopg2
