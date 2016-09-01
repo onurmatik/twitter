@@ -1,22 +1,21 @@
 from __future__ import unicode_literals
 
-import redis
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.conf import settings
+from django.contrib.auth.models import User as DjangoUser
 from api import UserClient, StreamClient, TwitterAuthError
-from users.models import User
 
 
-r = redis.StrictRedis(
-    host='localhost',
-    port=6379,
-    db=0,
-)
+class User(DjangoUser):
+    class Meta:
+        proxy = True
 
-p = r.pubsub(
-    ignore_subscribe_messages=True,
-)
+    def get_client(self):
+        return self.token.get_client()
+
+    def get_stream_client(self):
+        return self.token.get_stream_client()
 
 
 class Application(models.Model):

@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
 
-class ConnectionManager(models.Manager):
+class FriendshipManager(models.Manager):
     def connections_of(self, user_id):
         # all connections, friends & followers
         qs = self.filter(
@@ -32,7 +32,7 @@ class ConnectionManager(models.Manager):
         )
 
 
-class Connection(models.Model):
+class Friendship(models.Model):
     user_id = models.BigIntegerField(db_index=True)
     type = models.PositiveSmallIntegerField(
         db_index=True,
@@ -41,9 +41,9 @@ class Connection(models.Model):
             (2, 'followers'),
         )
     )
-    ids = models.ArrayField(models.BigIntegerField())
+    ids = ArrayField(models.BigIntegerField())
     next_cursor = models.BigIntegerField(db_index=True)
     previous_cursor = models.BigIntegerField(db_index=True)
     time = models.DateTimeField(auto_now_add=True, db_index=True)
 
-    objects = ConnectionManager()
+    objects = FriendshipManager()

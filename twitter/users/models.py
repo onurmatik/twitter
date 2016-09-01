@@ -2,19 +2,7 @@ from __future__ import unicode_literals
 
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
-from django.contrib.auth.models import User as DjangoUser
 from api import TwitterRateLimitError
-
-
-class User(DjangoUser):
-    class Meta:
-        proxy = True
-
-    def get_client(self):
-        return self.token.get_client()
-
-    def get_stream_client(self):
-        return self.token.get_stream_client()
 
 
 class TwitterUser(models.Model):

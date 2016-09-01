@@ -23,10 +23,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.admin',
 
-    'tokens',
-    'users',
-    'tweets',
-    'lists',
+    'twitter.tokens',
+    'twitter.users',
+    'twitter.tweets',
+    'twitter.lists',
+    'twitter.friendships',
 )
 
 MIDDLEWARE_CLASSES = (
