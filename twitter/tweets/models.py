@@ -6,6 +6,6 @@ from django.contrib.postgres.fields import JSONField
 
 class Tweet(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    tweet = JSONField()
+    data = JSONField()
     created = models.DateTimeField(auto_now_add=True)
     deleted = models.DateTimeField(blank=True, null=True)
