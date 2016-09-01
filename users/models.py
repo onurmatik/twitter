@@ -2,7 +2,19 @@ from __future__ import unicode_literals
 
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
+from django.contrib.auth.models import User as DjangoUser
 from api import TwitterRateLimitError
+
+
+class User(DjangoUser):
+    class Meta:
+        proxy = True
+
+    def get_client(self):
+        return self.token.get_client()
+
+    def get_stream_client(self):
+        return self.token.get_stream_client()
 
 
 class TwitterUser(models.Model):
@@ -15,7 +27,7 @@ class TwitterUser(models.Model):
     friend_ids = ArrayField(models.BigIntegerField(), blank=True, null=True)
     follower_ids = ArrayField(models.BigIntegerField(), blank=True, null=True)
 
-    fetched = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now=True)
 
     @property
     def name(self):
@@ -123,8 +135,3 @@ class TwitterUser(models.Model):
             id__in=self.get_connection_ids,
             deactivated=True,
         ).count()
-
-    def get_complete_connections(self):
-        return TwitterUser.objects.filter(
-            id__in=self.get_connection_ids(),
-        ).exclude(friend_ids__isnull=True)

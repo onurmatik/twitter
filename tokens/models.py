@@ -4,8 +4,8 @@ import redis
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.conf import settings
-from django.contrib.auth.models import User as DjangoUser
 from api import UserClient, StreamClient, TwitterAuthError
+from users.models import User
 
 
 r = redis.StrictRedis(
@@ -17,17 +17,6 @@ r = redis.StrictRedis(
 p = r.pubsub(
     ignore_subscribe_messages=True,
 )
-
-
-class User(DjangoUser):
-    class Meta:
-        proxy = True
-
-    def get_client(self):
-        return self.token.get_client()
-
-    def get_stream_client(self):
-        return self.token.get_stream_client()
 
 
 class Application(models.Model):
@@ -69,6 +58,8 @@ class Token(models.Model):
     rate_limit_status = JSONField(blank=True, null=True)
     valid = models.BooleanField(default=True)
 
+    objects = TokenManager()
+
     def __unicode__(self):
         return self.data['screen_name']
 
@@ -104,8 +95,8 @@ class Token(models.Model):
             response = self.get_client().api.application.rate_limit_status.get(
                 resources=resources,
             )
-        except Exception, e:
-            self.valid = False
+        except Exception:
+            pass
         else:
             self.rate_limit_status = response.resources
         self.save()
