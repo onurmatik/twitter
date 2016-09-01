@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.conf import settings
 from django.contrib.auth.models import User as DjangoUser
-from api import UserClient, StreamClient, TwitterAuthError
+from twitter.api import UserClient, StreamClient, TwitterAuthError
 
 
 class User(DjangoUser):

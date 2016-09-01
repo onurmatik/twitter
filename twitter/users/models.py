@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
-from api import TwitterRateLimitError
+from twitter.api import TwitterRateLimitError
 
 
 class TwitterUser(models.Model):
