@@ -42,8 +42,8 @@ class Friendship(models.Model):
         )
     )
     ids = ArrayField(models.BigIntegerField())
-    next_cursor = models.BigIntegerField(db_index=True)
-    previous_cursor = models.BigIntegerField(db_index=True)
+    next_cursor = models.CharField(max_length=20, db_index=True)
+    previous_cursor = models.CharField(max_length=20, db_index=True)
     time = models.DateTimeField(auto_now_add=True, db_index=True)
 
     objects = FriendshipManager()
