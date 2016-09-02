@@ -6,7 +6,6 @@ from twitter.api import TwitterRateLimitError
 
 
 class TwitterUser(models.Model):
-    id = models.BigIntegerField(primary_key=True)
     data = JSONField(blank=True, null=True)
 
     protected = models.BooleanField(default=False)
@@ -15,7 +14,7 @@ class TwitterUser(models.Model):
     friend_ids = ArrayField(models.BigIntegerField(), blank=True, null=True)
     follower_ids = ArrayField(models.BigIntegerField(), blank=True, null=True)
 
-    updated = models.DateTimeField(auto_now=True)
+    time = models.DateTimeField(auto_now=True)
 
     @property
     def name(self):
