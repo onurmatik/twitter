@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from twitter.views import Authorize
+from twitter.tokens.views import Authorize
 
 
 urlpatterns = [
