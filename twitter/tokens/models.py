@@ -38,16 +38,26 @@ class Application(models.Model):
 
 class TokenManager(models.Manager):
     def get_for_resource(self, resource_uri):
-        resource_family = resource_uri.split('/')[0]
+        resource_family = resource_uri.split('/')[1]
         kwargs = {
-            'resources__%s__%s__remaining__gt' % (resource_family, resource_uri): 0,
+            'rate_limit_status__%s__%s__remaining__gt' % (resource_family, resource_uri): 0,
         }
-        token = Token.objects.filter(**kwargs).first()
-        token.rate_limit_status[resource_family][resource_uri]['remaining'] -= 1
-        token.save()
-        if token.rate_limit_status[resource_family][resource_uri]['remaining'] == 0:
-            token.update_rate_limit_status(resource_uri)
+        token = Token.objects.filter(valid=True).filter(**kwargs).first()
+        if token:
+            resource = token.rate_limit_status[resource_family][resource_uri]
+            resource['remaining'] -= 1
+            token.save()
+        else:
+            self.reset_limits()
         return token
+
+    def init_limits(self):
+        for token in self.filter(valid=True).filter(rate_limit_status__isnull=True):
+            token.fetch_rate_limit_status()
+
+    def reset_limits(self):
+        for token in self.filter(valid=True):
+            token.reset_rate_limit_status()
 
 
 class Token(models.Model):
