@@ -1,10 +1,13 @@
 from __future__ import unicode_literals
 
+from time import time
+
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.conf import settings
 from django.contrib.auth.models import User as DjangoUser
-from twitter.api import UserClient, StreamClient, TwitterAuthError
+
+from twitter.api import UserClient, StreamClient, TwitterAuthError, TwitterRateLimitError
 
 
 class User(DjangoUser):
@@ -99,13 +102,31 @@ class Token(models.Model):
             self.valid = False
             self.save()
 
-    def update_rate_limit_status(self, resources=None):
+    def fetch_rate_limit_status(self, resources=None):
         try:
             response = self.get_client().api.application.rate_limit_status.get(
                 resources=resources,
             )
-        except Exception:
+        except TwitterAuthError:
+            self.valid = False
+            self.save()
+        except TwitterRateLimitError:
             pass
         else:
-            self.rate_limit_status = response.resources
-        self.save()
+            self.rate_limit_status = response.data['resources']
+            self.save()
+
+    def reset_rate_limit_status(self):
+        if self.rate_limit_status:
+            updated = False
+            for resource_family in self.rate_limit_status.keys():
+                for resource_uri, data in self.rate_limit_status[resource_family].items():
+                    if data['reset'] < time() and data['remaining'] < data['limit']:
+                        data['remaining'] = data['limit']
+                        data['reset'] = int(time()) + 15*60
+                        self.rate_limit_status[resource_family][resource_uri] = data
+                        updated = True
+            if updated:
+                self.save()
+        else:
+            self.fetch_rate_limit_status()
