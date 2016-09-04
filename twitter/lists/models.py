@@ -12,9 +12,6 @@ class List(models.Model):
     members = ArrayField(models.BigIntegerField(), blank=True, null=True)
     subscribers = ArrayField(models.BigIntegerField(), blank=True, null=True)
 
-    owner = models.BigIntegerField(db_index=True)
-    slug = models.SlugField(db_index=True)
-
     class Meta:
         ordering = ('-updated',)
 
