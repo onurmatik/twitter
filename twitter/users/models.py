@@ -89,36 +89,6 @@ class TwitterUser(models.Model):
     def get_connection_ids(self):
         return set(self.friend_ids + self.follower_ids)
 
-    def get_available_users(self):
-        return TwitterUser.objects.filter(
-            id__in=self.get_connection_ids,
-            protected=False,
-            deactivated=False,
-        ).exclude(friend_ids__isnull=True)
-
-    def get_unavailable_users(self):
-        return TwitterUser.objects.filter(
-            id__in=self.get_connection_ids,
-        ).exclude(
-            protected=False,
-            deactivated=False,
-        )
-
-    def get_users_with_details(self):
-        return TwitterUser.objects.filter(
-            id__in=self.get_connection_ids,
-            protected=False,
-            deactivated=False,
-        ).exclude(data__isnull=True)
-
-    def protected_count(self):
-        return TwitterUser.objects.filter(
-            id__in=self.get_connection_ids,
-            protected=True,
-        ).count()
-
-    def deactivated_count(self):
-        return TwitterUser.objects.filter(
-            id__in=self.get_connection_ids,
-            deactivated=True,
-        ).count()
+    def list_memberships(self):
+        from twitter.lists.models import List
+        return List.objects.filter(members__contains=self.data['id'])

@@ -9,3 +9,9 @@ class Tweet(models.Model):
     data = JSONField()
     created = models.DateTimeField(auto_now_add=True)
     deleted = models.DateTimeField(blank=True, null=True)
+
+    def username(self):
+        return self.data['user']['screen_name']
+
+    def text(self):
+        return self.data['text']
