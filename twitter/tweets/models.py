@@ -15,29 +15,3 @@ class Tweet(models.Model):
 
     def text(self):
         return self.data['text']
-
-    def photo_urls(self):
-        urls = []
-        for entity in self.data['entities']:
-            if 'media' in entity and entity['media']['type'] == 'photo':
-                urls.append(entity['media']['expanded_url'])
-        return urls
-
-    def video_urls(self):
-        urls = []
-        for entity in self.data['extended_entities']:
-            if entity['type'] == 'video':
-                urls.append(entity['expanded_url'])
-        return urls
-
-    def has_photo(self):
-        for entity in self.data['entities']:
-            if 'media' in entity and entity['media']['type'] == 'photo':
-                return True
-        return False
-
-    def has_video(self):
-        for entity in self.data['extended_entities']:
-            if entity['type'] == 'video':
-                return True
-        return False
