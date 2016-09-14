@@ -1,7 +1,6 @@
-==============
-Twitter Client
-==============
+Twitter Package
+===============
 
-A Python/Django Twitter client for REST and stream APIs and authentication.
+A Python / Django Twitter package that handles authentication, provides REST and stream API clients and has Django models to manage Twitter data.
 
-pip install git+git://github.com/solfasol/twitterclient.git
+pip install git+git://github.com/onurmatik/twitter.git
