@@ -13,3 +13,9 @@ class TokenAdmin(admin.ModelAdmin):
     list_editable = ('app',)
     list_filter = ('valid',)
     search_fields = ('data',)
+    actions = ('verify',)
+
+    def verify(self, request, queryset):
+        for token in queryset:
+            if token.valid:
+                token.verify()
