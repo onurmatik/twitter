@@ -9,8 +9,11 @@ class List(models.Model):
     data = JSONField(blank=True, null=True)
     updated = models.DateTimeField(auto_now=True)
 
-    members = ArrayField(models.BigIntegerField(), blank=True, null=True)
-    subscribers = ArrayField(models.BigIntegerField(), blank=True, null=True)
+    member_ids = ArrayField(models.BigIntegerField(), blank=True, null=True)
+    subscriber_ids = ArrayField(models.BigIntegerField(), blank=True, null=True)
+
+    member_names = ArrayField(models.CharField(max_length=20), blank=True, null=True)
+    subscriber_names = ArrayField(models.CharField(max_length=20), blank=True, null=True)
 
     class Meta:
         ordering = ('-updated',)
