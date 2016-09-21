@@ -5,6 +5,7 @@ from django.db import models
 
 
 class TwitterUser(models.Model):
+    id = models.BigIntegerField(primary_key=True)
     data = JSONField(blank=True, null=True)
 
     protected = models.BooleanField(default=False)
@@ -36,5 +37,6 @@ class TwitterUser(models.Model):
         return set(self.friend_ids + self.follower_ids)
 
     def list_memberships(self):
+        # returns the lists the user is a member of
         from twitter.lists.models import List
         return List.objects.filter(members__contains=self.data['id'])
