@@ -47,3 +47,6 @@ class Friendship(models.Model):
     time = models.DateTimeField(auto_now_add=True, db_index=True)
 
     objects = FriendshipManager()
+
+    def count(self):
+        return len(self.ids)
