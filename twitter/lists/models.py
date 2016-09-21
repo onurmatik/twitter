@@ -18,8 +18,11 @@ class List(models.Model):
     class Meta:
         ordering = ('-updated',)
 
-    def member_count(self):
-        return self.members and len(self.members) or 0
+    def member_count_ids(self):
+        return self.member_ids and len(self.member_ids) or 0
+
+    def member_count_names(self):
+        return self.member_names and len(self.member_names) or 0
 
     def __unicode__(self):
         return self.data['name']
