@@ -12,17 +12,11 @@ class List(models.Model):
     member_ids = ArrayField(models.BigIntegerField(), blank=True, null=True)
     subscriber_ids = ArrayField(models.BigIntegerField(), blank=True, null=True)
 
-    member_names = ArrayField(models.CharField(max_length=20), blank=True, null=True)
-    subscriber_names = ArrayField(models.CharField(max_length=20), blank=True, null=True)
-
     class Meta:
         ordering = ('-updated',)
 
-    def member_count_ids(self):
+    def member_count(self):
         return self.member_ids and len(self.member_ids) or 0
-
-    def member_count_names(self):
-        return self.member_names and len(self.member_names) or 0
 
     def __unicode__(self):
         return self.data['name']
