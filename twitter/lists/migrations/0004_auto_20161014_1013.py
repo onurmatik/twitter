@@ -13,14 +13,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='list',
-            name='member_ids',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.BigIntegerField(), blank=True, null=True, size=None),
-        ),
-        migrations.AddField(
-            model_name='list',
-            name='subscriber_ids',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.BigIntegerField(), blank=True, null=True, size=None),
-        ),
     ]
