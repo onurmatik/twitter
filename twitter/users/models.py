@@ -57,3 +57,11 @@ class TwitterUser(models.Model):
         # returns the lists the user is a member of
         from twitter.lists.models import List
         return List.objects.filter(members__contains=self.data['id'])
+
+    @property
+    def friend_count(self):
+        return len(self.friend_ids)
+
+    @property
+    def follower_count(self):
+        return len(self.follower_ids)
