@@ -60,8 +60,8 @@ class TwitterUser(models.Model):
 
     @property
     def friend_count(self):
-        return len(self.friend_ids)
+        return self.friend_ids and len(self.friend_ids) or '-'
 
     @property
     def follower_count(self):
-        return len(self.follower_ids)
+        return self.follower_ids and len(self.follower_ids) or '-'
