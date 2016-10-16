@@ -305,7 +305,7 @@ class UserClient(BaseTwitterClient):
         except requests.RequestException as e:
             raise TwitterClientError(str(e))
         except ValueError:
-            raise TwitterClientError('Reponse does not contain a token.')
+            raise TwitterClientError('Response does not contain a token.')
 
         if auto_set_token:
             self.auto_set_token(token)
