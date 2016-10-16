@@ -46,5 +46,5 @@ class List(models.Model):
                 count=5000,
                 include_entities=False,
             )
-            self.member_ids = [user.id for user in response.data['users']]
+            self.subscriber_ids = [user.id for user in response.data['users']]
             self.save()
