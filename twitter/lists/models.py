@@ -17,10 +17,10 @@ class List(models.Model):
         ordering = ('-updated',)
 
     def member_count(self):
-        return self.member_ids and len(self.member_ids) or '-'
+        return not self.member_ids is None and len(self.member_ids) or '-'
 
     def subscriber_count(self):
-        return self.subscriber_ids and len(self.subscriber_ids) or '-'
+        return not self.subscriber_ids is None and len(self.subscriber_ids) or '-'
 
     def __unicode__(self):
         return self.data['name']
