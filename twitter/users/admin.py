@@ -6,7 +6,10 @@ from twitter.lists.models import List
 @admin.register(TwitterUser)
 class TwitterUserAdmin(admin.ModelAdmin):
     search_fields = ('data', 'id')
-    list_display = ('name', 'time', 'protected', 'deactivated', 'friend_count', 'follower_count',)
+    list_display = (
+        'name', 'time', 'protected', 'deactivated',
+        'friend_count', 'fetched_friend_count', 'follower_count', 'fetched_follower_count',
+    )
     list_filter = ('protected', 'deactivated',)
     actions = (
         'update_friends', 'update_followers',
