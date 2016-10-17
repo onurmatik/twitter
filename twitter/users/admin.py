@@ -17,6 +17,10 @@ class TwitterUserAdmin(admin.ModelAdmin):
         'create_friends_twitter_list', 'create_followers_twitter_list',
     )
 
+    def update_details(self, request, queryset):
+        for user in queryset:
+            user.update_details()
+
     def update_friends(self, request, queryset):
         for user in queryset:
             user.update_friend_ids()
