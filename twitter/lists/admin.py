@@ -61,9 +61,9 @@ class ListAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if obj:
-            return ListForm
-        else:
             return super(ListAdmin, self).get_form(request, obj, **kwargs)
+        else:
+            return ListForm
 
     def update_members(self, request, queryset):
         for l in queryset:
