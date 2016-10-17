@@ -58,7 +58,7 @@ class TwitterUser(models.Model):
             token = Token.objects.get_for_resource('/followers/ids')
             if token:
                 client = token.get_client()
-                response = client.api.friends.ids.get(
+                response = client.api.followers.ids.get(
                     user_id=self.id,
                     count=5000,
                     cursor=cursor,
