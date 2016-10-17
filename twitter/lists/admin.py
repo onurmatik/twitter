@@ -47,7 +47,7 @@ class ListForm(forms.ModelForm):
                 owner_screen_name=owner_screen_name,
                 slug=slug,
             )
-            return List(
+            return List.objects.create(
                 id=response.data['id'],
                 data=response.data,
             )
