@@ -15,7 +15,6 @@ class ListForm(forms.ModelForm):
         fields = ['name', 'members', 'mode']
 
     def save(self, **kwargs):
-        print self.cleaned_data['members']
         if self.cleaned_data['members']:
             # create a new Twitter list
             token = Token.objects.filter(data__screen_name=settings.TWITTER_DEFAULT_USER).first()
@@ -36,7 +35,7 @@ class ListForm(forms.ModelForm):
                     )
         else:
             # URL; fetch an existing Twitter list
-            owner_screen_name, x, slug = self.name.split('/')[-3:]
+            owner_screen_name, x, slug = self.cleaned_data['name'].split('/')[-3:]
             token = Token.objects.get_for_resource('/lists/show')
             if token:
                 client = token.get_client()
