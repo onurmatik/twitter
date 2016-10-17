@@ -8,16 +8,21 @@ class TwitterUserAdmin(admin.ModelAdmin):
     search_fields = ('data', 'id')
     list_display = ('name', 'time', 'protected', 'deactivated', 'friend_count', 'follower_count',)
     list_filter = ('protected', 'deactivated',)
-    actions = ('create_members_community',)
+    actions = (
+        'update_friends', 'update_followers',
+        'create_friends_community', 'create_followers_community', 'create_connections_community',
+        'create_friends_twitter_list', 'create_followers_twitter_list',
+    )
 
-    def create_followers_list(self, request, queryset):
-        member_ids = []
-        list_names = []
-        for l in queryset:
-            member_ids += l.member_ids
-            list_names.append(l.data['name'])
+    def update_friends(self, request, queryset):
+        for user in queryset:
+            user.update_friend_ids()
+
+    def update_followers(self, request, queryset):
+        for user in queryset:
+            user.update_follower_ids()
+
+    def create_friends_list(self):
         List.objects.create(
-            name='Followers of %s' % ', '.join(list_names),
-            member_ids=member_ids,
-            owner=request.user,
+
         )

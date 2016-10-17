@@ -1,13 +1,9 @@
 from __future__ import unicode_literals
-
-from django.contrib.postgres.fields import JSONField, ArrayField
+from time import sleep
+from django.contrib.postgres.fields import JSONField
 from django.db import models
-
-
-class TwitterUserManager(models.Manager):
-    def incomplete_friend_list(self):
-        #return self.filter(data__friends_count__gt=)
-        pass
+from twitter.tokens.models import Token
+from twitter.connections.models import Friends, Followers
 
 
 class TwitterUser(models.Model):
@@ -16,9 +12,6 @@ class TwitterUser(models.Model):
 
     protected = models.BooleanField(default=False)
     deactivated = models.BooleanField(default=False)
-
-    friend_ids = ArrayField(models.BigIntegerField(), blank=True, null=True)
-    follower_ids = ArrayField(models.BigIntegerField(), blank=True, null=True)
 
     time = models.DateTimeField(auto_now=True)
 
@@ -39,29 +32,81 @@ class TwitterUser(models.Model):
         self.data = response.data[0]
         self.save()
 
-    def update_connection_ids(self):
-        # get the connections from the Friendship app
-        #friends =
-        self.friend_ids = list(set())
+    def update_friend_ids(self):
+        cursor = -1
+        while cursor != 0:
+            token = Token.objects.get_for_resource('/friends/ids')
+            if token:
+                client = token.get_client()
+                response = client.api.friends.ids.get(
+                    user_id=self.id,
+                    count=5000,
+                    cursor=cursor,
+                )
+                Friends.objects.create(
+                    user_id=self.id,
+                    ids=response.data['ids'],
+                    next_cursor=response.data['next_cursor'],
+                    previous_cursor=response.data['previous_cursor'],
+                )
+                cursor = response.data['next_cursor']
+            else:
+                break
 
-    def get_connection_ids(self):
-        return set(self.friend_ids + self.follower_ids)
+    def update_follower_ids(self):
+        cursor = -1
+        while cursor != 0:
+            token = Token.objects.get_for_resource('/followers/ids')
+            if token:
+                client = token.get_client()
+                response = client.api.friends.ids.get(
+                    user_id=self.id,
+                    count=5000,
+                    cursor=cursor,
+                )
+                Friends.objects.create(
+                    user_id=self.id,
+                    ids=response.data['ids'],
+                    next_cursor=response.data['next_cursor'],
+                    previous_cursor=response.data['previous_cursor'],
+                )
+                cursor = response.data['next_cursor']
+            else:
+                break
 
-    def is_friend_list_complete(self):
-        return self.data['friends_count'] == len(self.friend_ids)
+    @property
+    def friend_ids(self):
+        # TODO: should only take the most recent ones into account
+        qs = Friends.objects.filter(
+            user_id=self.user_id,
+        ).values_list('ids', flat=True)
+        return set(sum(qs, []))
 
-    def is_follower_list_complete(self):
-        return self.data['followers_count'] == len(self.follower_ids)
+    @property
+    def follower_ids(self):
+        # TODO: should only take the most recent ones into account
+        qs = Followers.objects.filter(
+            user_id=self.user_id,
+        ).values_list('ids', flat=True)
+        return set(sum(qs, []))
+
+    @property
+    def friend_count(self):
+        return self.data['friends_count']
+
+    @property
+    def follower_count(self):
+        return self.data['followers_count']
+
+    @property
+    def fetched_friend_count(self):
+        return len(self.friend_ids)
+
+    @property
+    def fetched_follower_count(self):
+        return len(self.follower_ids)
 
     def list_memberships(self):
         # returns the lists the user is a member of
         from twitter.lists.models import List
         return List.objects.filter(members__contains=self.data['id'])
-
-    @property
-    def friend_count(self):
-        return self.friend_ids and len(self.friend_ids) or '-'
-
-    @property
-    def follower_count(self):
-        return self.follower_ids and len(self.follower_ids) or '-'

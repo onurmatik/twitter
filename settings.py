@@ -27,7 +27,7 @@ INSTALLED_APPS = (
     'twitter.users',
     'twitter.tweets',
     'twitter.lists',
-    'twitter.friendships',
+    'twitter.connections',
 )
 
 MIDDLEWARE_CLASSES = (
