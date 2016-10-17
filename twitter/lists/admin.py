@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib import admin
 from django.conf import settings
-from twitter.api import AppClient
 from twitter.lists.models import List
 from twitter.tokens.models import Token
 
@@ -18,23 +17,22 @@ class ListForm(forms.ModelForm):
     def save(self, **kwargs):
         if self.fields['members']:
             # create a new Twitter list
-            client = AppClient(
-                consumer_key=settings.CONSUMER_KEY,
-                consumer_secret=settings.CONSUMER_SECRET,
-            )
-            response = client.api.lists.create.post(
-                name=self.fields['name'],
-                mode=self.fields['mode'],
-            )
-            list_id = response.data['id']
-            members = self.fields['members']
-            while len(members) > 0:
-                chunk = members[:100]
-                del(members[:100])
-                response = client.api.lists.members.create_all.post(
-                    list_id=list_id,
-                    screen_name=chunk,
+            token = Token.objects.filter(data__screen_name=settings.TWITTER_DEFAULT_USER).first()
+            if token:
+                client = token.get_client()
+                response = client.api.lists.create.post(
+                    name=self.fields['name'],
+                    mode=self.fields['mode'],
                 )
+                list_id = response.data['id']
+                members = self.fields['members']
+                while len(members) > 0:
+                    chunk = members[:100]
+                    del(members[:100])
+                    response = client.api.lists.members.create_all.post(
+                        list_id=list_id,
+                        screen_name=chunk,
+                    )
         else:
             # URL; fetch an existing Twitter list
             owner_screen_name, x, slug = self.name.split('/')[-3:]
