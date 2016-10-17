@@ -39,7 +39,7 @@ class ListForm(forms.ModelForm):
             token = Token.objects.get_for_resource('/lists/show')
             if token:
                 client = token.get_client()
-                response = client.api.lists.show(
+                response = client.api.lists.show.get(
                     owner_screen_name=owner_screen_name,
                     slug=slug,
                 )
