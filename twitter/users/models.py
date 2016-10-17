@@ -78,7 +78,7 @@ class TwitterUser(models.Model):
     def friend_ids(self):
         # TODO: should only take the most recent ones into account
         qs = Friends.objects.filter(
-            user_id=self.user_id,
+            user_id=self.id,
         ).values_list('ids', flat=True)
         return set(sum(qs, []))
 
@@ -86,7 +86,7 @@ class TwitterUser(models.Model):
     def follower_ids(self):
         # TODO: should only take the most recent ones into account
         qs = Followers.objects.filter(
-            user_id=self.user_id,
+            user_id=self.id,
         ).values_list('ids', flat=True)
         return set(sum(qs, []))
 
