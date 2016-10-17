@@ -16,23 +16,24 @@ class ListForm(forms.ModelForm):
         fields = ['name', 'members', 'mode']
 
     def save(self, **kwargs):
-        if self.members:
+        if self.fields['members']:
             # create a new Twitter list
             client = AppClient(
                 consumer_key=settings.CONSUMER_KEY,
                 consumer_secret=settings.CONSUMER_SECRET,
             )
             response = client.api.lists.create.post(
-                name=self.name,
-                mode=self.mode,
+                name=self.fields['name'],
+                mode=self.fields['mode'],
             )
             list_id = response.data['id']
-            while len(self.members) > 0:
-                members = self.members[:100]
-                del(self.members[:100])
+            members = self.fields['members']
+            while len(members) > 0:
+                chunk = members[:100]
+                del(members[:100])
                 response = client.api.lists.members.create_all.post(
                     list_id=list_id,
-                    screen_name=members,
+                    screen_name=chunk,
                 )
         else:
             # URL; fetch an existing Twitter list
