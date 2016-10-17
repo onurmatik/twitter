@@ -1,3 +1,7 @@
 from django.shortcuts import render
+from django.views.generic import CreateView
+from twitter.lists.models import List
 
-# Create your views here.
+
+class ListCreateView(CreateView):
+    model = List

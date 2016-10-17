@@ -21,15 +21,16 @@ class TwitterUser(models.Model):
     def __unicode__(self):
         return self.name
 
-    def update_details(self, client=None):
-        if not client:
-            client = self.get_client()
-        response = client.api.users.lookup.get(
-            user_id=self.id,
-            include_entities=False,
-        )
-        self.data = response.data[0]
-        self.save()
+    def update_details(self):
+        token = Token.objects.get_for_resource('/users/lookup')
+        client = token.get_client()
+        if client:
+            response = client.api.users.lookup.get(
+                user_id=self.id,
+                include_entities=False,
+            )
+            self.data = response.data[0]
+            self.save()
 
     def update_friend_ids(self):
         cursor = -1

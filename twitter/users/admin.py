@@ -12,7 +12,7 @@ class TwitterUserAdmin(admin.ModelAdmin):
     )
     list_filter = ('protected', 'deactivated',)
     actions = (
-        'update_friends', 'update_followers',
+        'update_details', 'update_friends', 'update_followers',
         'create_friends_community', 'create_followers_community', 'create_connections_community',
         'create_friends_twitter_list', 'create_followers_twitter_list',
     )
