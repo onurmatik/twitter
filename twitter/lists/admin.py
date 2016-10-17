@@ -13,6 +13,7 @@ class ListForm(forms.ModelForm):
 
     class Meta:
         model = List
+        fields = ['name', 'members', 'mode']
 
     def save(self, **kwargs):
         if self.members:
