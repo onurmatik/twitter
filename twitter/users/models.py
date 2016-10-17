@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-from time import sleep
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from twitter.tokens.models import Token
@@ -64,7 +63,7 @@ class TwitterUser(models.Model):
                     count=5000,
                     cursor=cursor,
                 )
-                Friends.objects.create(
+                Followers.objects.create(
                     user_id=self.id,
                     ids=response.data['ids'],
                     next_cursor=response.data['next_cursor'],
