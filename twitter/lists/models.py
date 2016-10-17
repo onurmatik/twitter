@@ -6,7 +6,7 @@ from twitter.tokens.models import Token
 
 
 class List(models.Model):
-    id = models.BigIntegerField(primary_key=True)
+    id = models.BigIntegerField(primary_key=True, blank=True)
     data = JSONField(blank=True, null=True)
     updated = models.DateTimeField(auto_now=True)
 
