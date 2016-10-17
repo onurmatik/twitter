@@ -15,18 +15,17 @@ class ListForm(forms.ModelForm):
         fields = ['name', 'members', 'mode']
 
     def save(self, **kwargs):
-        print self.fields['members']
-        if self.fields['members']:
+        if self.cleaned_data['members']:
             # create a new Twitter list
             token = Token.objects.filter(data__screen_name=settings.TWITTER_DEFAULT_USER).first()
             if token:
                 client = token.get_client()
                 response = client.api.lists.create.post(
-                    name=self.fields['name'],
-                    mode=self.fields['mode'],
+                    name=self.cleaned_data['name'],
+                    mode=self.cleaned_data['mode'],
                 )
                 list_id = response.data['id']
-                members = self.fields['members']
+                members = self.cleaned_data['members']
                 while len(members) > 0:
                     chunk = members[:100]
                     del(members[:100])
