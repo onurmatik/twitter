@@ -36,7 +36,7 @@ class ListForm(forms.ModelForm):
                 )
         else:
             # URL; fetch an existing Twitter list
-            owner_screen_name, slug = self.name.split('/')[-2:]
+            owner_screen_name, x, slug = self.name.split('/')[-3:]
             token = Token.objects.get_for_resource('/lists/show')
             if token:
                 client = token.get_client()
