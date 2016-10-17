@@ -23,17 +23,10 @@ class Connection(models.Model):
 
 
 class Friends(Connection):
-    pass
-
-
-class FollowersManager(models.Manager):
-    def friends_of(self, user_id):
-        # TODO: should take the most recent ones into account
-        qs = self.filter(
-            user_id=user_id,
-        ).values_list('ids', flat=True)
-        return set(sum(qs, []))
+    class Meta:
+        verbose_name_plural = 'friends'
 
 
 class Followers(Connection):
-    pass
+    class Meta:
+        verbose_name_plural = 'followers'
